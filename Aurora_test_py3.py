@@ -1,4 +1,4 @@
-from Aurora import Aurora, PortHandle
+from Aurora_py3 import Aurora, PortHandle
 # from GalilRobot import GalilRobot
 # from GalilRobot import RobotAxisID
 import serial
@@ -66,7 +66,7 @@ time.sleep(3)
 tracker.sensorData_write_FileName('/home/jimmy/', 'data.txt')
 tracker.sensorData_write_FileIni()
 tic = time.time()
-for n in xrange(10):
+for n in range(10):
     tracker.sensorData_updateAll()
     tracker.sensorData_write(n)
 

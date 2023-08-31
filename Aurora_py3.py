@@ -106,7 +106,7 @@ class Aurora:
             }.get(self._baud_rat, 0.1)
 
         time.sleep(sec)
-        self._serial_object.write(cmd + '\r')
+        self._serial_object.write(cmd.encode() + b'\r')
         if get_replay:
             self._serial_object.flush()
             return self._serial_object.readline()
@@ -233,7 +233,7 @@ class Aurora:
 
     def reply_withoutCR(self, msg):
         # delete last CR
-        msg_split = msg.strip('\r').split('\r')
+        msg_split = msg.decode().strip('\r').split('\r')
 
         msg_sought = False
 
@@ -241,7 +241,7 @@ class Aurora:
             if msg_sought:
                 return msg_i
 
-            if msg_i is not '1D4C1':
+            if msg_i != '1D4C1':
                 if len(msg_i) >= 4:
                     if msg_i[:4] == 'ERRO':
                         self.printErrorMessage(msg_i)
@@ -289,7 +289,7 @@ class Aurora:
                 elif reply[:4] == 'OKAY':
                     continue
 
-            if reply is not '':
+            if reply != '':
                 break
 
             time.sleep(sec)
@@ -481,8 +481,8 @@ class Aurora:
             return None
 
     def portHandles_int2hex(self, value_int):
-        print(value_int)
-        print(format(value_int, '02X'))
+        if not value_int:
+            return None
         return format(value_int, '02X')
 
     def sensorData_updateAll(self):
@@ -552,24 +552,24 @@ class Aurora:
                     if found_ID == self._port_handles[idx].portHandle_ID:
                         # Updates quaternion
                         self._port_handles[idx].updateRot(np.array([
-                            struct.unpack('<f', str(reply_ba[s+1:s+5]))[0],
-                            struct.unpack('<f', str(reply_ba[s+5:s+9]))[0],
-                            struct.unpack('<f', str(reply_ba[s+9:s+13]))[0],
-                            struct.unpack('<f', str(reply_ba[s+13:s+17]))[0]
+                            struct.unpack('<f', reply_ba[s+1:s+5])[0],
+                            struct.unpack('<f', reply_ba[s+5:s+9])[0],
+                            struct.unpack('<f', reply_ba[s+9:s+13])[0],
+                            struct.unpack('<f', reply_ba[s+13:s+17])[0]
                         ]))
 
                         # Updates position
                         self._port_handles[idx].updateTrans(np.array([
-                            struct.unpack('<f', str(reply_ba[s + 17:s + 21]))[0],
-                            struct.unpack('<f', str(reply_ba[s + 21:s + 25]))[0],
-                            struct.unpack('<f', str(reply_ba[s + 25:s + 29]))[0]
+                            struct.unpack('<f', reply_ba[s + 17:s + 21])[0],
+                            struct.unpack('<f', reply_ba[s + 21:s + 25])[0],
+                            struct.unpack('<f', reply_ba[s + 25:s + 29])[0]
                         ]))
 
-                        self._port_handles[idx].updateError(struct.unpack('f', str(reply_ba[s+29:s+33]))[0])
-                        sensorStatus = hex(struct.unpack('I', str(reply_ba[s + 33:s + 37]))[0])
+                        self._port_handles[idx].updateError(struct.unpack('f', reply_ba[s+29:s+33])[0])
+                        sensorStatus = hex(struct.unpack('I', reply_ba[s + 33:s + 37])[0])
                         self._port_handles[idx].updateStatusComplete(sensorStatus)
                         self._port_handles[idx].updateSensorStatus(sensorStatus)
-                        self._port_handles[idx].updateFrameNumber(struct.unpack('I', str(reply_ba[s+37:s+41]))[0])
+                        self._port_handles[idx].updateFrameNumber(struct.unpack('I', reply_ba[s+37:s+41])[0])
                         break
 
     def sensorData_write_FileName(self, path, name):
@@ -1164,7 +1164,7 @@ class Aurora:
               " \033[0m")
 
     def printErrorMessage(self, msg):
-        msg_error = msg.split('\r')[0]
+        msg_error = msg.decode().split('\r')[0]
         if msg_error[:5] == 'ERROR':
             self.printErrorCode(msg_error[5:7])
 
