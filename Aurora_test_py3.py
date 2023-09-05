@@ -7,7 +7,7 @@ import binascii
 
 PRINT_HANDLE = True
 
-#tracker = Aurora(timeout=1, baud_rat=38400)
+# tracker = Aurora(timeout=1, baud_rat=38400)
 tracker = Aurora(baud_rat=9600)
 # tracker = Aurora(baud_rat=921600)
 

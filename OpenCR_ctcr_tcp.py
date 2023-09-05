@@ -14,7 +14,7 @@ class OpenCR_CTCR_tcp:
         return np.fromstring(reply, dtype=float, sep=' ')
     
     def set_joint_values(self, target):
-        message = "spos " + np.array2string(target, separator=' ', formatter={'float_kind':lambda x: "%.3f" % x})[1:-1]
+        message = "spos " + np.array2string(target, separator=' ', formatter={'float_kind':lambda x: "%2.4f" % x})[1:-1]
         self.clientsocket.send(message.encode())
         # todo: add error checking
         return True
@@ -23,7 +23,7 @@ class OpenCR_CTCR_tcp:
         return self.set_joint_values([0, 0, 0, 0, 0, 0])
     
     def full_position(self):
-        return self.set_joint_values([0, -16, 0, -22.25, 0, -28.7])
+        return self.set_joint_values([0, -16, 0, -22, 0, -28.4])
     
-ctcr = OpenCR_CTCR_tcp()
-print(ctcr.get_joint_values())
+# ctcr = OpenCR_CTCR_tcp(8101)
+# print(ctcr.get_joint_values())

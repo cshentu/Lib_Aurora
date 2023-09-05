@@ -1,27 +1,18 @@
 import numpy as np
 import pandas as pd
 import time
-from OpenCR_CTCR_tcp import OpenCR_CTCR_tcp
+from OpenCR_ctcr_tcp import OpenCR_CTCR_tcp
 from Aurora_py3 import Aurora
+from tqdm import tqdm, trange
 
 FIELNAME = 'beta_alpha_joint_values.csv'
-INDEXING = [3,0,4,1,5,2]
-INDEXING_ACTUAL = [9,6,10,7,11,8]
-DATASET_NAME = 'beta_alpha_joint_values_dataset.csv'
+AB2J = [3,0,4,1,5,2]
+J2AB = [1,3,5,0,2,4]
+DATASET_NAME = 'beta_alpha_joint_values.csv'
 df = pd.read_csv(FIELNAME)
-# add empty columns
-df['actual_beta1'] = np.nan
-df['actual_beta2'] = np.nan
-df['actual_beta3'] = np.nan
-df['actual_alpha1'] = np.nan
-df['actual_alpha2'] = np.nan
-df['actual_alpha3'] = np.nan
-df['x'] = np.nan
-df['y'] = np.nan
-df['z'] = np.nan
 
 starting_index = 0
-N_sample = 10
+N_sample = 1000
 
 ## set up connection to Aurora
 tracker = Aurora(baud_rat=9600)
@@ -43,21 +34,41 @@ time.sleep(0.1)
 tracker.portHandles_detectAndAssign_FlowChart(printFeedback=True)
 time.sleep(0.1)
 tracker.portHandles_updateStatusAll()
+print('------------------------ tracking ------------------------')
+tracker.trackingStart()
+time.sleep(2)
+
 
 ## set up connection to CTCR
-ctcr = OpenCR_CTCR_tcp(8083)
+ctcr = OpenCR_CTCR_tcp(8109)
 
-
+pbar = tqdm(total=N_sample)
+print("starting data collection")
 for i in range(0, N_sample):
-    ctcr.set_joint_values(df.iloc[starting_index + i, INDEXING])
+    ctcr.set_joint_values(df.iloc[starting_index + i, 0:6].to_numpy()[AB2J])
+    # print(df.iloc[starting_index + i, 0:6].to_numpy())
     time.sleep(2)
     actual_joint_values = ctcr.get_joint_values()
-    df.iloc[starting_index + i, INDEXING_ACTUAL] = actual_joint_values
+    # print('-'*30)
+    # print("JOINT: ", actual_joint_values)
+    df.iloc[starting_index + i, 6:12] = actual_joint_values[J2AB]
 
-    for n in range(10):
-        tracker.sensorData_updateAll()
-        tracker.sensorData_write(n)
-    df.iloc[starting_index + i, 12] = tracker._port_handles[n]._trans[0]
-    df.iloc[starting_index + i, 13] = tracker._port_handles[n]._trans[1]
-    df.iloc[starting_index + i, 14] = tracker._port_handles[n]._trans[2]
+    tracker.sensorData_collectData(n_times=10)
+    for n in range(tracker._n_port_handles):
+        df.iloc[starting_index + i, 12] = tracker._port_handles[n]._trans[0]
+        df.iloc[starting_index + i, 13] = tracker._port_handles[n]._trans[1]
+        df.iloc[starting_index + i, 14] = tracker._port_handles[n]._trans[2]
+    print("XYZ: ", df.iloc[starting_index + i, 12:14])
+    print("")
     df.to_csv(DATASET_NAME, index=False)
+    pbar.update(1)
+pbar.close()
+
+tracker._BEEP(2)
+tracker.trackingStop()
+# Close and disconnect Aurora
+print('------------------------ closing ------------------------')
+if tracker._isConnected:
+    print('Nach dem Beep wird Aurora geschlossen')
+    tracker._BEEP(1)
+    tracker.disconnect()
