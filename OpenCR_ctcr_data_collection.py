@@ -41,7 +41,7 @@ assert tracker._n_port_handles==2, f"Number of Aurora sensors detected is not 2,
 
 
 ## set up connection to CTCR
-ctcr = OpenCR_CTCR_tcp(8111)
+ctcr = OpenCR_CTCR_tcp(8112)
 
 pbar = tqdm(total=N_sample)
 print("starting data collection")
