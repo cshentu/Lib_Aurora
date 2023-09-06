@@ -49,9 +49,9 @@ print('tracker._device_init is ' + str(tracker._device_init))
 # tracker.portHandles_detectAndAssign()
 print('------------------------ setting ------------------------')
 # tracker._port_handles[0]._printSensorStatus()
-# print('tracker._n_port_handles is ' + str(tracker._n_port_handles)
-# print('len(tracker._port_handles) is ' + str(len(tracker._port_handles))
-# print('tracker._port_handles[0].sensor_status is ' + str(tracker._port_handles[0].sensor_status)
+# print('tracker._n_port_handles is ' + str(tracker._n_port_handles))
+# print('len(tracker._port_handles) is ' + str(len(tracker._port_handles)))
+# print('tracker._port_handles[0].sensor_status is ' + str(tracker._port_handles[0].sensor_status))
 
 time.sleep(0.1)
 tracker.portHandles_detectAndAssign_FlowChart(printFeedback=True)
@@ -61,6 +61,9 @@ tracker.portHandles_updateStatusAll()
 
 # Tracking
 print('------------------------ tracking ------------------------')
+print('tracker._n_port_handles is ' + str(tracker._n_port_handles))
+print('len(tracker._port_handles) is ' + str(len(tracker._port_handles)))
+
 tracker.trackingStart()
 time.sleep(3)
 tracker.sensorData_write_FileName('/home/jimmy/', 'data.txt')

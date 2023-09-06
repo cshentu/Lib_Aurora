@@ -14,7 +14,7 @@ class OpenCR_CTCR_tcp:
         return np.fromstring(reply, dtype=float, sep=' ')
     
     def set_joint_values(self, target):
-        message = "spos " + np.array2string(target, separator=' ', formatter={'float_kind':lambda x: "%2.4f" % x})[1:-1]
+        message = "spos " + np.array2string(target, separator=' ', formatter={'float_kind':lambda x: "%2.4f" % x})[1:-1] + "\0"
         self.clientsocket.send(message.encode())
         # todo: add error checking
         return True

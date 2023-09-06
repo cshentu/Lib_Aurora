@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 
 np.random.seed(520)
-N_sample = 10000
+N_sample = 100000
 L1 = 16
 L2 = 22
 L3 = 28.4
@@ -24,8 +24,23 @@ df['actual_beta3'] = np.nan
 df['actual_alpha1'] = np.nan
 df['actual_alpha2'] = np.nan
 df['actual_alpha3'] = np.nan
-df['x'] = np.nan
-df['y'] = np.nan
-df['z'] = np.nan
+
+df['x1'] = np.nan
+df['y1'] = np.nan
+df['z1'] = np.nan
+df['q01'] = np.nan
+df['qx1'] = np.nan
+df['qy1'] = np.nan
+df['qz1'] = np.nan
+df['error1'] = np.nan
+
+df['x2'] = np.nan
+df['y2'] = np.nan
+df['z2'] = np.nan
+df['q02'] = np.nan
+df['qx2'] = np.nan
+df['qy2'] = np.nan
+df['qz2'] = np.nan
+df['error2'] = np.nan
 df.to_csv('beta_alpha_joint_values.csv', index=False)
 
