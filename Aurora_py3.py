@@ -566,10 +566,10 @@ class Aurora:
                         ]))
 
                         self._port_handles[idx].updateError(struct.unpack('f', reply_ba[s+29:s+33])[0])
-                        sensorStatus = hex(struct.unpack('I', reply_ba[s + 33:s + 37])[0])
+                        sensorStatus = hex(struct.unpack('i', reply_ba[s + 33:s + 37])[0])
                         self._port_handles[idx].updateStatusComplete(sensorStatus)
                         self._port_handles[idx].updateSensorStatus(sensorStatus)
-                        self._port_handles[idx].updateFrameNumber(struct.unpack('I', reply_ba[s+37:s+41])[0])
+                        self._port_handles[idx].updateFrameNumber(struct.unpack('i', reply_ba[s+37:s+41])[0])
                         break
 
     def sensorData_write_FileName(self, path, name):

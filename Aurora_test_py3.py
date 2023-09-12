@@ -8,8 +8,8 @@ import binascii
 PRINT_HANDLE = True
 
 # tracker = Aurora(timeout=1, baud_rat=38400)
-tracker = Aurora(baud_rat=9600)
-# tracker = Aurora(baud_rat=921600)
+# tracker = Aurora(baud_rat=9600)
+tracker = Aurora(baud_rat=921600)
 
 if not tracker._isConnected:
     print('tracker is not connected!')
@@ -72,6 +72,7 @@ tic = time.time()
 for n in range(10):
     tracker.sensorData_updateAll()
     tracker.sensorData_write(n)
+# tracker.sensorData_collectData(n_times=10)
 
 tracker.sensorData_write_FileClose()
 toc = time.time()

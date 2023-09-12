@@ -2,7 +2,7 @@ import socket
 import numpy as np
 
 class OpenCR_CTCR_tcp:
-    def __init__(self, port=8083):
+    def __init__(self, port=8119):
         self.clientsocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.serverAddr = ('127.0.0.1', port)
         self.clientsocket.connect(self.serverAddr)
@@ -20,10 +20,16 @@ class OpenCR_CTCR_tcp:
         return True
     
     def home_position(self):
-        return self.set_joint_values([0, 0, 0, 0, 0, 0])
+        return self.set_joint_values(np.array([0, 0, 0, 0, 0, 0]))
     
     def full_position(self):
-        return self.set_joint_values([0, -16, 0, -22, 0, -28.4])
+        return self.set_joint_values(np.array([0, -16, 0, -22, 0, -28.4]))
     
-# ctcr = OpenCR_CTCR_tcp(8101)
+    def stop_robot(self):
+        message = "quit"
+        self.clientsocket.send(message.encode())
+        # todo: add error checking
+        return True
+    
+# ctcr = OpenCR_CTCR_tcp(8119)
 # print(ctcr.get_joint_values())
