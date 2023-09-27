@@ -31,5 +31,5 @@ class OpenCR_CTCR_tcp:
         # todo: add error checking
         return True
     
-# ctcr = OpenCR_CTCR_tcp(8119)
-# print(ctcr.get_joint_values())
+ctcr = OpenCR_CTCR_tcp(8143)
+print(ctcr.get_joint_values())
