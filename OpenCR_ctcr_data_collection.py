@@ -5,15 +5,15 @@ from OpenCR_ctcr_tcp import OpenCR_CTCR_tcp
 from Aurora_py3 import Aurora
 from tqdm import tqdm, trange
 
-FIELNAME = 'beta_alpha_joint_values_sep19.csv'
+FIELNAME = 'joint_values_oct11_ordered.csv'
 AB2J = [3,0,4,1,5,2]
 J2AB = [1,3,5,0,2,4]
 
-DATASET_NAME = 'beta_alpha_joint_values_sep20.csv'
+DATASET_NAME = 'joint_values_oct11.csv'
 df = pd.read_csv(FIELNAME)
 
-starting_index = 11873
-N_sample = 100000-11873
+starting_index = 0
+N_sample = 100000
 consecutive_same_state_count = 0
 consecutive_same_measurement_count = 0
 previous_state = np.zeros((6,1))
@@ -46,21 +46,26 @@ assert tracker._n_port_handles==2, f"Number of Aurora sensors detected is not 2,
 tracker.sensorData_collectData(n_times=10)
 
 ## set up connection to CTCR
-ctcr = OpenCR_CTCR_tcp(8147)
+ctcr = OpenCR_CTCR_tcp(8088)
+
+# manually put ctcr in fully extended position
+for i in range(11):
+    ctcr.set_joint_values(np.array([0, -4-i, 0, -10-i, 0, -16-i]))
+    time.sleep(1.0)
+ctcr.set_joint_values(np.array([0, -15, 0, -21.5, 0, -27.5]))
+time.sleep(2.0)
 
 pbar = tqdm(total=N_sample)
 print("starting data collection")
 for i in range(0, N_sample):
     ctcr.set_joint_values(df.iloc[starting_index + i, 0:6].to_numpy()[AB2J])
     # print(df.iloc[starting_index + i, 0:6].to_numpy())
-    time.sleep(3.0)
+    time.sleep(2.0)
     actual_joint_values = ctcr.get_joint_values()
     # print('-'*30)
     # print("JOINT: ", actual_joint_values)
     df.iloc[starting_index + i, 6:12] = actual_joint_values[J2AB]
-    
-
-    tracker.sensorData_collectData(n_times=3)
+    tracker.sensorData_collectData(n_times=5)
 
     for n in range(tracker._n_port_handles):
         df.iloc[starting_index + i, 12 + n*8] = tracker._port_handles[n]._trans[0]
@@ -86,7 +91,7 @@ for i in range(0, N_sample):
         consecutive_same_measurement_count += 1
     else:
         consecutive_same_measurement_count = 0
-    if consecutive_same_state_count > 10 or consecutive_same_measurement_count > 10:
+    if consecutive_same_state_count > 30 or consecutive_same_measurement_count > 30:
         print("something went wrong with robot or aurora sensor, aborting")
         ctcr.stop_robot()
         break

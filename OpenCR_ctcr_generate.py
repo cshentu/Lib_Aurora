@@ -3,9 +3,9 @@ import pandas as pd
 
 np.random.seed(520)
 N_sample = 100000
-L1 = 16
-L2 = 22
-L3 = 28.4
+L1 = 15
+L2 = 21.5
+L3 = 27.5
 MB = np.array([[-L1, 0, 0],
                [-L1, L1-L2, 0],
                [-L1, L1-L2, L2-L3],])
@@ -14,6 +14,12 @@ MB = np.array([[-L1, 0, 0],
 beta_joint_values_01 = np.random.rand(3, N_sample)
 beta_joint_values = MB @ beta_joint_values_01
 alpha_joint_values = np.random.rand(3, N_sample) * 2 * np.pi * 4 
+
+s = beta_joint_values[0:3,:].sum(0) * 0.5 + alpha_joint_values[2,:] + alpha_joint_values[0:2,:].sum(0) * 0.5
+s_ids = s.argsort()
+print(s_ids.shape)
+beta_joint_values = beta_joint_values[:,s_ids]
+alpha_joint_values = alpha_joint_values[:,s_ids]
 
 # create a dataframe and save to file
 df = pd.DataFrame(np.concatenate((beta_joint_values, alpha_joint_values), axis=0).T, columns=['beta1', 'beta2', 'beta3', 'alpha1', 'alpha2', 'alpha3'])
@@ -42,5 +48,7 @@ df['qx2'] = np.nan
 df['qy2'] = np.nan
 df['qz2'] = np.nan
 df['error2'] = np.nan
-df.to_csv('beta_alpha_joint_values.csv', index=False)
+df.to_csv('joint_values_oct11_ordered.csv', index=False)
 
+df_repeat = pd.concat([df[0:10].copy()]*10,ignore_index=True)
+df_repeat.to_csv('joint_values_oct11_repeat.csv', index=False)
