@@ -617,7 +617,7 @@ class Aurora:
             # time.sleep(0.1)
             # print("\033[93m" + "the " + str(n) + "-th data of port_handle nb " + str(ith_port_handel) + " was stored" + " \033[0m")
 
-    def sensorData_collectData(self, n_times=10):
+    def sensorData_collectData(self, n_times=10, starting_sensor=0):
         # Collect Data and afterwards compute average/least square
 
         n_port_handle = self._n_port_handles
@@ -641,7 +641,7 @@ class Aurora:
         for n_th in range(n_times):
             self.sensorData_updateAll()
 
-            for ith_port_handel in range(self._n_port_handles):
+            for ith_port_handel in range(starting_sensor, self._n_port_handles):
                 # q0, q1, q2, q3, x, y, z, error, frame, port_handle, ldfNr, time
                 q = self._port_handles[ith_port_handel].getRot()
                 t = self._port_handles[ith_port_handel].getTrans()
@@ -654,7 +654,7 @@ class Aurora:
                 y[n_th, ith_port_handel] = t[1]
                 z[n_th, ith_port_handel] = t[2]
 
-        for ith_port_handel in range(self._n_port_handles):
+        for ith_port_handel in range(starting_sensor, self._n_port_handles):
             # assuming error ellipsoid
             x_mean = np.mean(x[:, ith_port_handel])
             y_mean = np.mean(y[:, ith_port_handel])
