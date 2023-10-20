@@ -11,33 +11,13 @@ AB2J = [3,0,4,1,5,2]
 J2AB = [1,3,5,0,2,4]
 
 FILENAME = f'./test_traj/{TEST_NAME}.csv'
-DATASET_NAME = f'./test_traj/{TEST_NAME}_{time.time()}.csv'
+DATASET_NAME = f'./test_traj/{TEST_NAME}_aurora.csv'
 df = pd.read_csv(FILENAME)
 # add empty columns
-df['actual_beta1'] = np.nan
-df['actual_beta2'] = np.nan
-df['actual_beta3'] = np.nan
-df['actual_alpha1'] = np.nan
-df['actual_alpha2'] = np.nan
-df['actual_alpha3'] = np.nan
-
 df['x1'] = np.nan
 df['y1'] = np.nan
 df['z1'] = np.nan
-df['q01'] = np.nan
-df['qx1'] = np.nan
-df['qy1'] = np.nan
-df['qz1'] = np.nan
-df['error1'] = np.nan
-
-df['x2'] = np.nan
-df['y2'] = np.nan
-df['z2'] = np.nan
-df['q02'] = np.nan
-df['qx2'] = np.nan
-df['qy2'] = np.nan
-df['qz2'] = np.nan
-df['error2'] = np.nan
+df['timestamp'] = np.nan
 
 starting_index = 0
 N_sample = df.shape[0]
@@ -70,12 +50,12 @@ time.sleep(2)
 pbar = tqdm(total=N_sample)
 print("starting data collection")
 pbar.update(starting_index)
-for i in range(starting_index+1, N_sample):
+for i in range(starting_index, N_sample):
     tracker.sensorData_collectData(n_times=1, starting_sensor=0)
-    for n in range(0,1): # only position sensor
-        df.iloc[starting_index + i, 12 + n*8] = tracker._port_handles[n]._trans[0]
-        df.iloc[starting_index + i, 13 + n*8] = tracker._port_handles[n]._trans[1]
-        df.iloc[starting_index + i, 14 + n*8] = tracker._port_handles[n]._trans[2]
+    df.iloc[7] = tracker._port_handles[0]._trans[0]
+    df.iloc[8] = tracker._port_handles[0]._trans[1]
+    df.iloc[9] = tracker._port_handles[0]._trans[2]
+    df.iloc[10] = time.time()
     pbar.update(1)
 pbar.close()
 df.to_csv(DATASET_NAME+".csv", index=False)
