@@ -15,7 +15,7 @@ beta_joint_values_01 = np.random.rand(3, N_sample)
 beta_joint_values = MB @ beta_joint_values_01
 alpha_joint_values = np.random.rand(3, N_sample) * 2 * np.pi * 4 
 
-s = beta_joint_values[0:3,:].sum(0) * 0.5 + alpha_joint_values[2,:] + alpha_joint_values[0:2,:].sum(0) * 0.5
+s = - (beta_joint_values**2).sum(0) + (alpha_joint_values**2).sum(0) * 10
 s_ids = s.argsort()
 print(s_ids.shape)
 beta_joint_values = beta_joint_values[:,s_ids]

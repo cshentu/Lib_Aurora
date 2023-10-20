@@ -5,12 +5,13 @@ from OpenCR_ctcr_tcp import OpenCR_CTCR_tcp
 from Aurora_py3 import Aurora
 from tqdm import tqdm, trange
 
-FIELNAME = 'joint_values_oct11_ordered.csv'
+FILENAME = 'joint_values_partial_new_oct17.csv'
+
 AB2J = [3,0,4,1,5,2]
 J2AB = [1,3,5,0,2,4]
 
-DATASET_NAME = 'joint_values_oct11.csv'
-df = pd.read_csv(FIELNAME)
+DATASET_NAME = 'partial_oct17'
+df = pd.read_csv(FILENAME)
 
 starting_index = 0
 N_sample = 100000
@@ -46,7 +47,7 @@ assert tracker._n_port_handles==2, f"Number of Aurora sensors detected is not 2,
 tracker.sensorData_collectData(n_times=10)
 
 ## set up connection to CTCR
-ctcr = OpenCR_CTCR_tcp(8088)
+ctcr = OpenCR_CTCR_tcp(8098)
 
 # manually put ctcr in fully extended position
 for i in range(11):
@@ -57,7 +58,8 @@ time.sleep(2.0)
 
 pbar = tqdm(total=N_sample)
 print("starting data collection")
-for i in range(0, N_sample):
+pbar.update(starting_index)
+for i in range(starting_index, N_sample):
     ctcr.set_joint_values(df.iloc[starting_index + i, 0:6].to_numpy()[AB2J])
     # print(df.iloc[starting_index + i, 0:6].to_numpy())
     time.sleep(2.0)
@@ -78,9 +80,10 @@ for i in range(0, N_sample):
         df.iloc[starting_index + i, 19 + n*8] = tracker._port_handles[n]._error
     current_measurement = df.iloc[starting_index + i, 20:23].to_numpy()
     print("XYZ: ", current_measurement)
-    df.to_csv(DATASET_NAME, index=False)
+    if (i > 0 and i%100==0):
+        df.to_csv(DATASET_NAME+".csv", index=False)
     if (i > 0 and i%5000==0):
-        df.to_csv(DATASET_NAME+f"checkpoint_{i}", index=False)
+        df.to_csv(DATASET_NAME+f"checkpoint_{i}.csv", index=False)
 
     # check for hardware error
     if np.linalg.norm(actual_joint_values[J2AB] - previous_state) < 0.1:
