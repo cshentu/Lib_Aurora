@@ -66,11 +66,11 @@ tracker.portHandles_updateStatusAll()
 print('------------------------ tracking ------------------------')
 tracker.trackingStart()
 time.sleep(2)
-assert tracker._n_port_handles==2, f"Number of Aurora sensors detected is not 2, got {tracker._n_port_handles}"
+# assert tracker._n_port_handles==2, f"Number of Aurora sensors detected is not 2, got {tracker._n_port_handles}"
 tracker.sensorData_collectData(n_times=10)
 
 ## set up connection to CTCR
-ctcr = OpenCR_CTCR_tcp(8101)
+ctcr = OpenCR_CTCR_tcp(8107)
 
 # manually put ctcr in starting position and pause
 ctcr.go_to_target_slowly(target=ctcr.joint2encoder(df.iloc[starting_index, 0:6].to_numpy()))
@@ -96,16 +96,16 @@ for i in range(starting_index+1, N_sample):
     # print('-'*30)
     # print("JOINT: ", actual_joint_values)
     df.iloc[starting_index + i, 6:12] = actual_joint_values[J2AB]
-    tracker.sensorData_collectData(n_times=1)
-    for n in range(1,2): # only position sensor
-        df.iloc[starting_index + i, 12 + n*8] = tracker._port_handles[n]._trans[0]
-        df.iloc[starting_index + i, 13 + n*8] = tracker._port_handles[n]._trans[1]
-        df.iloc[starting_index + i, 14 + n*8] = tracker._port_handles[n]._trans[2]
-        df.iloc[starting_index + i, 15 + n*8] = tracker._port_handles[n]._quaternion[0]
-        df.iloc[starting_index + i, 16 + n*8] = tracker._port_handles[n]._quaternion[1]
-        df.iloc[starting_index + i, 17 + n*8] = tracker._port_handles[n]._quaternion[2]
-        df.iloc[starting_index + i, 18 + n*8] = tracker._port_handles[n]._quaternion[3]
-        df.iloc[starting_index + i, 19 + n*8] = tracker._port_handles[n]._error
+    # tracker.sensorData_collectData(n_times=1, starting_sensor=0)
+    # for n in range(0,1): # only position sensor
+    #     df.iloc[starting_index + i, 12 + n*8] = tracker._port_handles[n]._trans[0]
+    #     df.iloc[starting_index + i, 13 + n*8] = tracker._port_handles[n]._trans[1]
+    #     df.iloc[starting_index + i, 14 + n*8] = tracker._port_handles[n]._trans[2]
+    #     df.iloc[starting_index + i, 15 + n*8] = tracker._port_handles[n]._quaternion[0]
+    #     df.iloc[starting_index + i, 16 + n*8] = tracker._port_handles[n]._quaternion[1]
+    #     df.iloc[starting_index + i, 17 + n*8] = tracker._port_handles[n]._quaternion[2]
+    #     df.iloc[starting_index + i, 18 + n*8] = tracker._port_handles[n]._quaternion[3]
+    #     df.iloc[starting_index + i, 19 + n*8] = tracker._port_handles[n]._error
     pbar.update(1)
 pbar.close()
 df.to_csv(DATASET_NAME+".csv", index=False)
