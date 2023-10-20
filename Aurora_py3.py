@@ -616,7 +616,7 @@ class Aurora:
             os.fsync(self._port_measurements[ith_port_handel].fileno())
             # time.sleep(0.1)
             # print("\033[93m" + "the " + str(n) + "-th data of port_handle nb " + str(ith_port_handel) + " was stored" + " \033[0m")
-
+            
     def sensorData_collectData(self, n_times=10):
         # Collect Data and afterwards compute average/least square
 
