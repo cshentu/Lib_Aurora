@@ -485,7 +485,7 @@ class Aurora:
             return None
         return format(value_int, '02X')
 
-    def sensorData_updateAll(self):
+    def sensorData_updateAll(self, starting_sensor=0):
         """
         Reads the current measurement of all sensors and update the corresponding Port Handle objects.
 
@@ -521,7 +521,7 @@ class Aurora:
             num_handle_reads = self.unpackBytes(reply_ba[6:7], 'num_handle_reads')
             # print('num_handle_reads = ' + str(num_handle_reads))
 
-            for idx_reads in range(num_handle_reads):
+            for idx_reads in range(starting_sensor, num_handle_reads):
                 # Get next position s in bytearray
                 s = 8 + 42 * idx_reads
 
@@ -548,7 +548,7 @@ class Aurora:
                 # # print('struct.calcsize = ' + str(struct.calcsize(str(reply_ba[s + 1:s + 5]))))
                 # ###########
 
-                for idx in range(self._n_port_handles):
+                for idx in range(starting_sensor, self._n_port_handles):
                     if found_ID == self._port_handles[idx].portHandle_ID:
                         # Updates quaternion
                         self._port_handles[idx].updateRot(np.array([
@@ -639,7 +639,7 @@ class Aurora:
         # xi3 = np.ndarray((1, n_port_handle), float)
 
         for n_th in range(n_times):
-            self.sensorData_updateAll()
+            self.sensorData_updateAll(starting_sensor=starting_sensor)
 
             for ith_port_handel in range(starting_sensor, self._n_port_handles):
                 # q0, q1, q2, q3, x, y, z, error, frame, port_handle, ldfNr, time
