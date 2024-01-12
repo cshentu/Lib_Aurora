@@ -6,7 +6,7 @@ from Aurora_py3 import Aurora
 from tqdm import tqdm, trange
 
 
-TEST_NAME = 'circle_physics_joint'
+TEST_NAME = 'spiral_learning_joint'
 AB2J = [3,0,4,1,5,2]
 J2AB = [1,3,5,0,2,4]
 
@@ -52,10 +52,10 @@ print("starting data collection")
 pbar.update(starting_index)
 for i in range(starting_index, N_sample):
     tracker.sensorData_collectData(n_times=1, starting_sensor=0)
-    df.iloc[7] = tracker._port_handles[0]._trans[0]
-    df.iloc[8] = tracker._port_handles[0]._trans[1]
-    df.iloc[9] = tracker._port_handles[0]._trans[2]
-    df.iloc[10] = time.time()
+    df.iloc[starting_index + i,6] = tracker._port_handles[0]._trans[0]
+    df.iloc[starting_index + i,7] = tracker._port_handles[0]._trans[1]
+    df.iloc[starting_index + i,8] = tracker._port_handles[0]._trans[2]
+    df.iloc[starting_index + i,9] = time.time()
     pbar.update(1)
 pbar.close()
 df.to_csv(DATASET_NAME+".csv", index=False)

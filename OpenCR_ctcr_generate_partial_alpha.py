@@ -1,18 +1,19 @@
 import numpy as np
 import pandas as pd
 
-np.random.seed(520)
-N_sample = 100000
-L1 = 15
-L2 = 21.5
-L3 = 27.5
+# np.random.seed(520)
+np.random.seed(250)
+N_sample = 50000
+L1 = 18
+L2 = 24
+L3 = 34
 MB = np.array([[-L1, 0, 0],
                [-L1, L1-L2, 0],
                [-L1, L1-L2, L2-L3],])
 
 # Generate random joint values
 beta_joint_values_01 = np.random.rand(3, N_sample)
-beta_joint_values = MB @ beta_joint_values_01
+beta_joint_values = - MB @ beta_joint_values_01
 alpha_joint_values = (np.random.rand(3, N_sample) - 0.5) * 2 * np.pi/3 * 4
 
 s = - (beta_joint_values**2).sum(0) + ((alpha_joint_values-8*np.pi)**2).sum(0) * 2
@@ -48,5 +49,7 @@ df['qx2'] = np.nan
 df['qy2'] = np.nan
 df['qz2'] = np.nan
 df['error2'] = np.nan
-df.to_csv('joint_values_partial_new_oct17.csv', index=False)
+df.to_csv('joint_values_partial_50k_v3.csv', index=False)
+
+# v3: Jan 12, 2024 after new base update
 

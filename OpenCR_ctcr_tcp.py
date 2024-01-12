@@ -28,6 +28,7 @@ class OpenCR_CTCR_tcp:
         return True
     
     def joint2encoder(self, joint):
+        # need to modify
         target = np.zeros_like(joint)
         target[0] = joint[2] * 4
         target[1] = -15 - joint[5] * 4 / (22.505 * 1e-3)
@@ -48,7 +49,7 @@ class OpenCR_CTCR_tcp:
         return self.set_joint_values(np.array([0, 0, 0, 0, 0, 0]))
     
     def full_position(self):
-        return self.set_joint_values(np.array([0, -16, 0, -22, 0, -28.4]))
+        return self.set_joint_values(np.array([0, -15, 0, -22, 0, -28.4]))
     
     def stop_robot(self):
         message = "quit"
@@ -56,5 +57,5 @@ class OpenCR_CTCR_tcp:
         # todo: add error checking
         return True
     
-# ctcr = OpenCR_CTCR_tcp(8147)
+# ctcr = OpenCR_CTCR_tcp(8194)
 # print(ctcr.get_joint_values())
