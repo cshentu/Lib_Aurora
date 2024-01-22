@@ -3,7 +3,7 @@ import pandas as pd
 
 # np.random.seed(520)
 np.random.seed(250)
-N_sample = 20000
+N_sample = 30
 L1 = 18
 L2 = 24
 L3 = 34
@@ -21,6 +21,14 @@ s_ids = s.argsort()
 print(s_ids.shape)
 beta_joint_values = beta_joint_values[:,s_ids]
 alpha_joint_values = alpha_joint_values[:,s_ids]
+
+print(beta_joint_values.shape)
+
+# repeat the poses in reverse
+beta_joint_values = np.hstack((beta_joint_values, np.flip(beta_joint_values, axis=1), beta_joint_values,beta_joint_values,beta_joint_values))
+alpha_joint_values = np.hstack((alpha_joint_values, np.flip(alpha_joint_values, axis=1), alpha_joint_values,alpha_joint_values,alpha_joint_values))
+
+print(beta_joint_values.shape)
 
 # create a dataframe and save to file
 df = pd.DataFrame(np.concatenate((beta_joint_values, alpha_joint_values), axis=0).T, columns=['beta1', 'beta2', 'beta3', 'alpha1', 'alpha2', 'alpha3'])
@@ -49,7 +57,7 @@ df['qx2'] = np.nan
 df['qy2'] = np.nan
 df['qz2'] = np.nan
 df['error2'] = np.nan
-df.to_csv('joint_values_partial_20k.csv', index=False)
+df.to_csv('joint_values_repeat_jan19.csv', index=False)
 
 # v3: Jan 12, 2024 after new base update
 
