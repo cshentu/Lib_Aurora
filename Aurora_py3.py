@@ -677,6 +677,13 @@ class Aurora:
             xi3 = xi[3] / xi_norm
 
             self.sensorData_overwriteData(ith_port_handel, x_mean, y_mean, z_mean, xi0, xi1, xi2, xi3)
+    
+    def sensorData_collect1sensor(self, sensor_idx=0):
+        # read one sensor once and return the data
+        self.sensorData_updateAll(starting_sensor=sensor_idx)
+        q = self._port_handles[sensor_idx].getRot()
+        t = self._port_handles[sensor_idx].getTrans()
+        return (t[0], t[1], t[2], q[0], q[1], q[2], q[3])
 
     def sensorData_overwriteData(self, handel, x, y, z, q0, q1, q2, q3):
         # Updates quaternion
