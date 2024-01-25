@@ -5,16 +5,16 @@ from OpenCR_ctcr_tcp import OpenCR_CTCR_tcp
 from Aurora_py3 import Aurora
 from tqdm import tqdm, trange
 
-FILENAME = 'joint_values_repeat_jan19.csv'
+FILENAME = 'joint_values_partial_20k_seed520.csv'
 
 AB2J = [3,0,4,1,5,2]
 J2AB = [1,3,5,0,2,4]
 
-DATASET_NAME = 'smooth_partial_repeat_jan22'
+DATASET_NAME = 'smooth_partial_20k_jan24' 
 df = pd.read_csv(FILENAME)
 
 starting_index = 0
-N_sample = 90
+N_sample = 20000
 consecutive_same_state_count = 0
 consecutive_same_measurement_count = 0
 previous_state = np.zeros((6,1))
@@ -47,14 +47,14 @@ assert tracker._n_port_handles==2, f"Number of Aurora sensors detected is not 2,
 tracker.sensorData_collectData(n_times=10)
 
 ## set up connection to CTCR
-ctcr = OpenCR_CTCR_tcp(8207)
+ctcr = OpenCR_CTCR_tcp(8211)
 
 # # manually put ctcr in fully extended position
 # ctcr.go_to_target_slowly(target=np.array([0, 0, 0, 0, 0, 0]))
 # time.sleep(2.0)
 
 # manually put ctcr in retracted position
-ctcr.go_to_target_slowly(target=np.array([0, -14, 0, -20, 0, -30]))
+ctcr.go_to_target_slowly(target=np.array([0, 14, 0, 20, 0, 30]))
 time.sleep(2.0)
 
 pbar = tqdm(total=N_sample)
@@ -62,7 +62,7 @@ print("starting data collection")
 pbar.update(starting_index)
 for i in range(starting_index, N_sample):
     ctcr.set_joint_values(df.iloc[starting_index + i, 0:6].to_numpy()[AB2J])
-    ctcr.go_to_target_slowly(n_steps=10, target=df.iloc[starting_index + i, 0:6].to_numpy()[AB2J])
+    ctcr.go_to_target_slowly(n_steps=15, target=df.iloc[starting_index + i, 0:6].to_numpy()[AB2J])
     # print(df.iloc[starting_index + i, 0:6].to_numpy())
     time.sleep(2.0)
     actual_joint_values = ctcr.get_joint_values()
