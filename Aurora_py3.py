@@ -101,7 +101,7 @@ class Aurora:
                 38400: 0.1,   # Not tested
                 57600: 0.1,   # Not tested
                 115200: 0.1,  # Not tested
-                921600: 0.1,  # Not tested
+                921600: 0.026,  # Not tested, 0.025(40Hz) sometimes skips a frame and throws an error
                 230400: 0.1   # Not tested
             }.get(self._baud_rat, 0.1)
 
@@ -521,6 +521,8 @@ class Aurora:
             num_handle_reads = self.unpackBytes(reply_ba[6:7], 'num_handle_reads')
             # print('num_handle_reads = ' + str(num_handle_reads))
 
+            
+
             for idx_reads in range(starting_sensor, num_handle_reads):
                 # Get next position s in bytearray
                 s = 8 + 42 * idx_reads
@@ -766,7 +768,7 @@ class Aurora:
         # READ_OUT_OF_VOLUME_NOT_ALLOWED = '0001'
         # READ_OUT_OF_VOLUME_ALLOWED     = '0800'  # '0801'
 
-        return self._send_cmd(cmd="BX " + reply_option, sec=0.1, get_replay=get_replay)
+        return self._send_cmd(cmd="BX " + reply_option, sec=None, get_replay=get_replay)
 
     def _COMM(self, baut_rate_s='0', data_bits_s='0', parity_s='0', stop_bits_s='0', hardware_handshaking_s='0'):
         """
