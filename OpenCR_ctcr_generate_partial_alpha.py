@@ -3,7 +3,7 @@ import pandas as pd
 
 np.random.seed(520)
 # np.random.seed(250)
-N_sample = 20000
+N_sample = 80000
 L1 = 18
 L2 = 24
 L3 = 34
@@ -49,7 +49,7 @@ df['qx2'] = np.nan
 df['qy2'] = np.nan
 df['qz2'] = np.nan
 df['error2'] = np.nan
-df.to_csv('joint_values_partial_20k_seed520.csv', index=False)
+df.to_csv('joint_values_partial_80k_seed520.csv', index=False)
 
 # v3: Jan 12, 2024 after new base update
 

@@ -58,5 +58,5 @@ class OpenCR_CTCR_tcp:
         return True
     
 
-# ctcr = OpenCR_CTCR_tcp(8208)
+# ctcr = OpenCR_CTCR_tcp(8212)
 # print(ctcr.get_joint_values())
