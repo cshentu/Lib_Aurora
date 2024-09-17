@@ -17,4 +17,3 @@ for i in range(4000):
     # time.sleep(0.05)
 cap.release()
 cv2.destroyAllWindows()
-
